@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "rebuild": "node ./scripts/rebuild-site.mjs",
-    "dev": "npm run rebuild && astro dev",
-    "build": "npm run rebuild && astro build",
-    "preview": "astro preview",
+    "dev": "npm run rebuild && node ./node_modules/astro/astro.js dev",
+    "build": "npm run rebuild && node ./node_modules/astro/astro.js build",
+    "preview": "node ./node_modules/astro/astro.js preview",
     "pixel-diff": "npm run build && node ./scripts/pixel-diff.mjs"
   },
   "devDependencies": {
