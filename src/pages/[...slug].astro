@@ -1,0 +1,143 @@
+---
+import fs from 'node:fs';
+
+import wpSummary from '../data/wp-export-summary.json';
+
+const resourcesManifestUrl = new URL('../../clone/resources_manifest.json', import.meta.url);
+const resourcesManifest = JSON.parse(fs.readFileSync(resourcesManifestUrl, 'utf8'));
+const resourceEntries = Object.entries(resourcesManifest.url_to_local ?? {}).sort(
+  (a, b) => b[0].length - a[0].length
+);
+const liveManifestUrl = new URL('../../clone/live_pages/manifest.json', import.meta.url);
+let liveManifest = { entries: {} };
+if (fs.existsSync(liveManifestUrl)) {
+  liveManifest = JSON.parse(fs.readFileSync(liveManifestUrl, 'utf8'));
+}
+
+function rewriteHtml(html, { preferRemote = false } = {}) {
+  let output = html;
+
+  if (!preferRemote) {
+    output = output
+      .replaceAll('../../resources/', '/resources/')
+      .replaceAll('../resources/', '/resources/')
+      .replaceAll('href="responsive.css"', 'href="/resources/common/responsive.css"');
+
+    for (const [remoteUrl, localPath] of resourceEntries) {
+      const normalizedLocal = `/${localPath.replace(/\\/g, '/')}`;
+      output = output.split(remoteUrl).join(normalizedLocal);
+      if (remoteUrl.startsWith('https://')) {
+        output = output.split(remoteUrl.replace('https://', 'http://')).join(normalizedLocal);
+      }
+    }
+  }
+
+  output = output
+    .replace(/(["'(])\/(wp-content\/[^"' )]+)\b/g, `$1https://liskfence.com/$2`)
+    .replace(/(["'(])\/(wp-includes\/[^"' )]+)\b/g, `$1https://liskfence.com/$2`)
+    .replace(/(["'(])\/(technor-semibold\/[^"' )]*)\b/g, `$1https://liskfence.com/$2`)
+    .replace(/(["'(])\/(switzer-regular\/[^"' )]*)\b/g, `$1https://liskfence.com/$2`);
+
+  return output;
+}
+
+export async function getStaticPaths() {
+  function normalizePathname(urlOrPath) {
+    try {
+      const url = new URL(urlOrPath);
+      const path = url.pathname;
+      return path.endsWith('/') ? path : `${path}/`;
+    } catch {
+      const path = urlOrPath.startsWith('/') ? urlOrPath : `/${urlOrPath}`;
+      return path.endsWith('/') ? path : `${path}/`;
+    }
+  }
+
+  function slugFromPath(pathname) {
+    const trimmed = pathname.replace(/^\/+|\/+$/g, '');
+    return trimmed || undefined;
+  }
+
+  const sitemapUrl = new URL('../../clone/sitemap.json', import.meta.url);
+  const sitemap = JSON.parse(fs.readFileSync(sitemapUrl, 'utf8'));
+  const routeMap = new Map();
+
+  for (const entry of sitemap) {
+    const pathname = normalizePathname(entry.url);
+    routeMap.set(pathname, {
+      kind: 'snapshot',
+      url: entry.url,
+      title: entry.title,
+      directory: entry.directory
+    });
+  }
+
+  const xmlEntries = [...wpSummary.publishedPages, ...wpSummary.publishedPosts];
+  for (const entry of xmlEntries) {
+    const pathname = normalizePathname(entry.link);
+    if (!routeMap.has(pathname)) {
+      routeMap.set(pathname, {
+        kind: 'xml-only',
+        url: entry.link,
+        title: entry.title,
+        directory: ''
+      });
+    }
+  }
+
+  return [...routeMap.entries()].map(([pathname, entry]) => ({
+    params: { slug: slugFromPath(pathname) },
+    props: { pathname, ...entry }
+  }));
+}
+
+const { kind, directory, title, url, pathname } = Astro.props;
+
+let outputHtml = '';
+
+if (kind === 'snapshot') {
+  const pagesRoot = new URL('../../clone/pages/', import.meta.url);
+  let preferRemote = false;
+  let htmlUrl = new URL(`${directory}/index.html`, pagesRoot);
+  const liveEntry = liveManifest.entries?.[pathname];
+  if (liveEntry?.file && pathname !== '/') {
+    htmlUrl = new URL(`../../clone/live_pages/${liveEntry.file}`, import.meta.url);
+    preferRemote = true;
+  }
+  outputHtml = rewriteHtml(fs.readFileSync(htmlUrl, 'utf8'), { preferRemote });
+} else {
+  const safeTitle = title || 'LISKFENCE';
+  const escapedTitle = safeTitle
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;');
+
+  outputHtml = `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>${escapedTitle} - LISKFENCE Archive</title>
+    <style>
+      body { margin: 0; font-family: Arial, sans-serif; background: #f6f7f8; color: #111; }
+      main { max-width: 760px; margin: 72px auto; padding: 0 20px; }
+      .card { background: #fff; border: 1px solid #d9dde1; border-radius: 12px; padding: 28px; }
+      h1 { margin-top: 0; font-size: 28px; }
+      p { line-height: 1.65; }
+      a { color: #004899; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="card">
+        <h1>${escapedTitle}</h1>
+        <p>This route exists in the WordPress export, but a full offline HTML snapshot was not found in <code>clone/pages</code>.</p>
+        <p>Original source link: <a href="${url}">${url}</a></p>
+        <p><a href="/">Back to home</a></p>
+      </section>
+    </main>
+  </body>
+</html>`;
+}
+---
+<Fragment set:html={outputHtml} />

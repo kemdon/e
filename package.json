@@ -1,0 +1,19 @@
+{
+  "name": "liskfence-astro-rebuild",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "rebuild": "node ./scripts/rebuild-site.mjs",
+    "dev": "npm run rebuild && astro dev",
+    "build": "npm run rebuild && astro build",
+    "preview": "astro preview",
+    "pixel-diff": "npm run build && node ./scripts/pixel-diff.mjs"
+  },
+  "devDependencies": {
+    "astro": "^5.5.0",
+    "pixelmatch": "^7.1.0",
+    "playwright": "^1.54.2",
+    "pngjs": "^7.0.0"
+  }
+}

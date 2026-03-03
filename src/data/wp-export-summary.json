@@ -1,0 +1,127 @@
+{
+  "generatedAt": "2026-03-03T11:28:35.838Z",
+  "counts": {
+    "totalItems": 173,
+    "byPostType": {
+      "attachment": 122,
+      "elementor_library": 9,
+      "nav_menu_item": 18,
+      "custom_css": 1,
+      "page": 11,
+      "wp_navigation": 1,
+      "wp_global_styles": 1,
+      "post": 10
+    },
+    "publishedPages": 11,
+    "publishedPosts": 10
+  },
+  "publishedPages": [
+    {
+      "title": "Airports",
+      "link": "https://liskfence.com/airports/",
+      "slug": "airports"
+    },
+    {
+      "title": "Plan Comparison",
+      "link": "https://liskfence.com/plan-comparison/",
+      "slug": "plan-comparison"
+    },
+    {
+      "title": "All Products",
+      "link": "https://liskfence.com/all-products/",
+      "slug": "all-products"
+    },
+    {
+      "title": "Home",
+      "link": "https://liskfence.com/",
+      "slug": "home"
+    },
+    {
+      "title": "Government Complex",
+      "link": "https://liskfence.com/government-complex/",
+      "slug": "government-complex"
+    },
+    {
+      "title": "Power Grid",
+      "link": "https://liskfence.com/power-grid/",
+      "slug": "power-grid"
+    },
+    {
+      "title": "Prisons",
+      "link": "https://liskfence.com/prisons/",
+      "slug": "prisons"
+    },
+    {
+      "title": "Tourist Attractions",
+      "link": "https://liskfence.com/tourist-attractions/",
+      "slug": "tourist-attractions"
+    },
+    {
+      "title": "Event Security",
+      "link": "https://liskfence.com/event-security/",
+      "slug": "event-security"
+    },
+    {
+      "title": "About Us",
+      "link": "https://liskfence.com/about-us/",
+      "slug": "about-us"
+    },
+    {
+      "title": "Contact Us",
+      "link": "https://liskfence.com/contact-us/",
+      "slug": "contact-us"
+    }
+  ],
+  "publishedPosts": [
+    {
+      "title": "P1000D",
+      "link": "https://liskfence.com/handheld/p1000d/",
+      "slug": "p1000d"
+    },
+    {
+      "title": "P1000-AB",
+      "link": "https://liskfence.com/handheld/p1000-ab/",
+      "slug": "p1000-ab"
+    },
+    {
+      "title": "P2000DJ",
+      "link": "https://liskfence.com/shield/p2000dj/",
+      "slug": "p2000dj"
+    },
+    {
+      "title": "P1500D",
+      "link": "https://liskfence.com/backpack/p1500d/",
+      "slug": "p1500d"
+    },
+    {
+      "title": "P1500J",
+      "link": "https://liskfence.com/backpack/p1500j/",
+      "slug": "p1500j"
+    },
+    {
+      "title": "G2000-A",
+      "link": "https://liskfence.com/gun-type/g2000-a/",
+      "slug": "g2000-a"
+    },
+    {
+      "title": "G1500DJS",
+      "link": "https://liskfence.com/gun-type/g1500djs/",
+      "slug": "g1500djs"
+    },
+    {
+      "title": "V5000-AB",
+      "link": "https://liskfence.com/vehicle-mounted/v5000-ab/",
+      "slug": "v5000-ab"
+    },
+    {
+      "title": "F3000DJ",
+      "link": "https://liskfence.com/fixed-type/f3000dj/",
+      "slug": "f3000dj"
+    },
+    {
+      "title": "T6000DJ",
+      "link": "https://liskfence.com/fixed-type/t6000dj/",
+      "slug": "t6000dj"
+    }
+  ]
+}
